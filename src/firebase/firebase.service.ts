@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Firestore } from '@google-cloud/firestore';
+import { CounterpickData } from 'src/dto/CounterpickData.dto';
 
 @Injectable()
 export class FirebaseService {
@@ -33,4 +34,16 @@ export class FirebaseService {
     const data = doc.data();
     return data!.best_supports || [];
   }
+
+  // Método para obtener los mejores counters para un Mid Laner
+  async getBestCountersForMidChamp(midChamp: string) {
+    const doc = await this.firestore.collection('counterpick').doc(midChamp).get();
+    
+    if (!doc.exists) {
+      return { name: midChamp, counters: [] };
+    }
+
+    const data = doc.data();
+    return data ? data as CounterpickData : { name: midChamp, counters: [] };
+  } 
 }

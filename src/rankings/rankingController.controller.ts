@@ -3,6 +3,7 @@ import { RankingService } from './rankingService.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BestSupportsResponseDto } from './dto/best-supports-response';
 import { BestAdcsResponseDto } from './dto/best-adcs-response.dto';
+import { CounterpickResponseDTO } from './dto/counterpick-response.dto';
 
 @Controller('ranking')
 @ApiTags('Ranking') 
@@ -51,4 +52,20 @@ export class RankingController {
         best_supports: bestAdcs,
       };
     }
+
+      /**
+       * Endpoint para obtener los mejores counters para un Mid Laner.
+       */
+      @Get('best-counters/:midChamp')
+      @ApiOperation({ summary: 'Obtener los mejores counters para un Mid Laner' })
+      @ApiResponse({
+        status: 200,
+        description: 'Lista de los mejores counters para el mid laner',
+        type: CounterpickResponseDTO, // Usa el DTO adecuado
+      })
+      @ApiResponse({ status: 404, description: 'No se encontraron counters para el Mid Laner especificado' })
+      async getBestCountersForMidChamp(@Param('midChamp') midChamp: string): Promise<CounterpickResponseDTO> {
+        return this.rankingsService.getBestCountersForMidChamp(midChamp);
+      }
+
 }

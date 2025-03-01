@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { FirebaseService } from 'src/firebase/firebase.service';
+import { CounterPickDTO } from './dto/counterpick.dto';
+import { CounterpickResponseDTO } from './dto/counterpick-response.dto';
 
 @Injectable()
 export class RankingService {
@@ -13,4 +15,14 @@ export class RankingService {
     async getBestAdcsForSupport(support: string) {
       return this.firebaseService.getBestAdcsForSupport(support);
     }
+
+    async getBestCountersForMidChamp(midChamp: string): Promise<CounterpickResponseDTO> {
+      const data = await this.firebaseService.getBestCountersForMidChamp(midChamp);
+    
+      return {
+        mid: midChamp, // Asegura que el nombre del campeón esté presente
+        counters: data.counters || [] // Asegura que counters sea un array
+      };
+    }
+    
 }
