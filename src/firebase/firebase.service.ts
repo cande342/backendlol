@@ -4,6 +4,8 @@ import { CounterpickData } from 'src/dto/CounterpickData.dto';
 import * as admin from 'firebase-admin';
 import * as dotenv from 'dotenv';
 
+dotenv.config(); 
+
 @Injectable()
 export class FirebaseService {
   private firestore: Firestore;
