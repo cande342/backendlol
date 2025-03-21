@@ -16,18 +16,27 @@ export class FirebaseService {
 
   private initializeFirebase() {
     const firebaseConfig = process.env.FIREBASE_CONFIG;
-
+  
+    // Verificamos si la variable de entorno existe
     if (!firebaseConfig) {
       throw new Error('La configuración de Firebase no está definida en las variables de entorno.');
     }
+  
+    // Intentamos parsear el JSON de la variable de entorno
+    let parsedConfig: any;
+    try {
+      parsedConfig = JSON.parse(firebaseConfig);
+    } catch (error) {
+      throw new Error('Error al parsear la configuración de Firebase.');
+    }
+  
+    // Inicializamos Firebase solo si no se ha hecho previamente
     if (admin.apps.length === 0) {
-      const serviceAccount = JSON.parse(firebaseConfig);
-      
       admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
+        credential: admin.credential.cert(parsedConfig),
       });
     }
-
+  
     this.firestore = admin.firestore();
   }
 
