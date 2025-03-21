@@ -4,6 +4,19 @@ import { CounterpickData } from 'src/dto/CounterpickData.dto';
 import * as admin from 'firebase-admin';
 import * as dotenv from 'dotenv';
 
+interface ServiceAccount {
+  type: string;
+  project_id: string;
+  private_key_id: string;
+  private_key: string;
+  client_email: string;
+  client_id: string;
+  auth_uri: string;
+  token_uri: string;
+  auth_provider_x509_cert_url: string;
+  client_x509_cert_url: string;
+  universe_domain: string;
+}
 dotenv.config(); 
 
 @Injectable()
@@ -14,30 +27,27 @@ export class FirebaseService {
     this.initializeFirebase();
   }
 
+
+
   private initializeFirebase() {
-    const firebaseConfig = process.env.FIREBASE_CONFIG;
-  
-    // Verificamos si la variable de entorno existe
-    if (!firebaseConfig) {
-      throw new Error('La configuración de Firebase no está definida en las variables de entorno.');
-    }
-  
-    // Intentamos parsear el JSON de la variable de entorno
-    let parsedConfig: any;
     try {
-      parsedConfig = JSON.parse(firebaseConfig);
+      if (admin.apps.length === 0) {
+        admin.initializeApp({
+          credential: admin.credential.cert({
+            projectId: process.env.FIREBASE_PROJECT_ID,
+            privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+          }),
+        });
+      }
+
+      this.firestore = admin.firestore();
+      console.log('Firebase inicializado correctamente');
+
     } catch (error) {
-      throw new Error('Error al parsear la configuración de Firebase.');
+      console.error('Error al inicializar Firebase:', error);
+      throw new Error('No se pudo inicializar Firebase. Revisa las variables de entorno.');
     }
-  
-    // Inicializamos Firebase solo si no se ha hecho previamente
-    if (admin.apps.length === 0) {
-      admin.initializeApp({
-        credential: admin.credential.cert(parsedConfig),
-      });
-    }
-  
-    this.firestore = admin.firestore();
   }
 
   getFirestore(): Firestore {
