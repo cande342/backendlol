@@ -2,11 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Firestore } from '@google-cloud/firestore';
 import { CounterpickData } from 'src/dto/CounterpickData.dto';
 import * as admin from 'firebase-admin';
-import * as path from 'path';
-import * as fs from 'fs';
 import * as dotenv from 'dotenv';
-
-dotenv.config();
 
 @Injectable()
 export class FirebaseService {
@@ -17,26 +13,19 @@ export class FirebaseService {
   }
 
   private initializeFirebase() {
-    const firebaseConfigPath = process.env.FIREBASE_CONFIG_PATH;
-    if (!firebaseConfigPath) {
-      throw new Error('La ruta de configuración de Firebase no está definida.');
+    const firebaseConfig = process.env.FIREBASE_CONFIG;
+
+    if (!firebaseConfig) {
+      throw new Error('La configuración de Firebase no está definida en las variables de entorno.');
     }
-  
-    // Usar process.cwd() como raíz del proyecto
-    const configPath = path.join(process.cwd(), firebaseConfigPath);
-  
-    if (!fs.existsSync(configPath)) {
-      throw new Error('El archivo de configuración de Firebase no se encuentra.');
-    }
-  
-    // Verificar si Firebase ya está inicializado
     if (admin.apps.length === 0) {
-      const serviceAccount = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      const serviceAccount = JSON.parse(firebaseConfig);
+      
       admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
       });
     }
-  
+
     this.firestore = admin.firestore();
   }
 
