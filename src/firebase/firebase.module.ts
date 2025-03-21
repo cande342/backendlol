@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { FirebaseService } from './firebase.service';
-import * as path from 'path';
-import * as fs from 'fs';
 
 
 @Module({
   providers: [
+    FirebaseService,
     {
       provide: 'FIRESTORE',
       useFactory: async () => {
