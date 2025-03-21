@@ -42,7 +42,7 @@ export class RankingController {
     @ApiResponse({
       status: 200,
       description: 'Lista de los mejores ADCs para el Support',
-      type: BestAdcsResponseDto, // Usa el DTO como tipo de respuesta
+      type: BestAdcsResponseDto,
     })
     @ApiResponse({ status: 404, description: 'No se encontraron datos para el Support especificado' })
     async getBestAdcsForSupport(@Param('support') support: string): Promise<BestAdcsResponseDto> {
@@ -56,16 +56,16 @@ export class RankingController {
       /**
        * Endpoint para obtener los mejores counters para un Mid Laner.
        */
-      @Get('best-counters/:midChamp')
-      @ApiOperation({ summary: 'Obtener los mejores counters para un Mid Laner' })
-      @ApiResponse({
-        status: 200,
-        description: 'Lista de los mejores counters para el mid laner',
-        type: CounterpickResponseDTO, // Usa el DTO adecuado
-      })
-      @ApiResponse({ status: 404, description: 'No se encontraron counters para el Mid Laner especificado' })
-      async getBestCountersForMidChamp(@Param('midChamp') midChamp: string): Promise<CounterpickResponseDTO> {
-        return this.rankingsService.getBestCountersForMidChamp(midChamp);
-      }
+    @Get('best-counters/:midChamp')
+    @ApiOperation({ summary: 'Obtener los mejores counters para un Mid Laner' })
+    @ApiResponse({
+      status: 200,
+      description: 'Lista de los mejores counters para el mid laner',
+      type: CounterpickResponseDTO, // Usa el DTO adecuado
+    })
+    @ApiResponse({ status: 404, description: 'No se encontraron counters para el Mid Laner especificado' })
+    async getBestCountersForMidChamp(@Param('midChamp') midChamp: string): Promise<CounterpickResponseDTO> {
+      return this.rankingsService.getBestCountersForMidChamp(midChamp);
+    }
 
 }

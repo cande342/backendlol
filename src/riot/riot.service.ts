@@ -4,8 +4,8 @@ import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class RiotService {
-        private readonly API_KEY = 'RGAPI-cc2b284d-27be-456d-af57-7c60f5759949';
-        private readonly BASE_URL = 'https://americas.api.riotgames.com/'
+        private readonly API_KEY = process.env.RIOT_API_KEY;
+        private readonly BASE_URL = process.env.BASE_URL;
       
         constructor(private readonly httpService: HttpService) {}
       

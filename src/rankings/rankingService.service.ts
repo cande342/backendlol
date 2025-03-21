@@ -20,8 +20,8 @@ export class RankingService {
       const data = await this.firebaseService.getBestCountersForMidChamp(midChamp);
     
       return {
-        mid: midChamp, // Asegura que el nombre del campeón esté presente
-        counters: data.counters || [] // Asegura que counters sea un array
+        mid: midChamp, 
+        counters: data.counters || [] 
       };
     }
     
