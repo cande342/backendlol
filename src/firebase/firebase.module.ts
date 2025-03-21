@@ -4,20 +4,31 @@ import { FirebaseService } from './firebase.service';
 import * as path from 'path';
 import * as fs from 'fs';
 
+
 @Module({
   providers: [
-    FirebaseService,
     {
       provide: 'FIRESTORE',
       useFactory: async () => {
-        const serviceAccountPath = path.join(process.cwd(), 'src/config/firebase-service-account.json');
+        const requiredEnvVars = [
+          'FIREBASE_PROJECT_ID',
+          'FIREBASE_PRIVATE_KEY',
+          'FIREBASE_CLIENT_EMAIL',
+        ];
 
-        if (!fs.existsSync(serviceAccountPath)) {
-          throw new Error(`❌ Firebase config file NOT FOUND at: ${serviceAccountPath}`);
+        for (const envVar of requiredEnvVars) {
+          if (!process.env[envVar]) {
+            throw new Error(`La variable de entorno ${envVar} no está definida.`);
+          }
         }
 
-        const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
+        const serviceAccount: admin.ServiceAccount = {
+          projectId: process.env.FIREBASE_PROJECT_ID!,
+          privateKey: process.env.FIREBASE_PRIVATE_KEY!.replace(/\\n/g, '\n'),
+          clientEmail: process.env.FIREBASE_CLIENT_EMAIL!,
+        };
 
+        // Inicializar Firebase Admin SDK
         const app = admin.initializeApp({
           credential: admin.credential.cert(serviceAccount),
         });
@@ -26,6 +37,6 @@ import * as fs from 'fs';
       },
     },
   ],
-  exports: [FirebaseService, 'FIRESTORE'],
+  exports: ['FIRESTORE'],
 })
 export class FirebaseModule {}
