@@ -10,7 +10,7 @@ async function bootstrap() {
 
   // Habilitar CORS
   app.enableCors({
-    origin: 'https://matchmakinglol.netlify.app',
+    origin: ['https://matchmakinglol.netlify.app', 'http://localhost:4200'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'], 
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
